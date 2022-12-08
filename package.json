@@ -5,7 +5,6 @@
   "main": "src/main.js",
   "scripts": {
     "init": "npm install & bower install",
-    "update": "npm update & bower update",
     "build": "electron-builder build",
     "start": "less-watch-compiler --run-once src/web/less src/web/css & eslint ./*.js --fix & electron . "
   },
