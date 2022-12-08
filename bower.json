@@ -1,0 +1,21 @@
+{
+  "name": "qq-analyser",
+  "description": "Analyser for qq group",
+  "main": "src/main.js",
+  "authors": [
+    "GentleCold"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "fontawesome": "^6.2.1"
+  }
+}

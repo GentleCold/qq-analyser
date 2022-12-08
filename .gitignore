@@ -1,0 +1,14 @@
+# npm package
+node_modules
+
+# electron build
+build
+
+# bower package
+src/web/lib
+
+# css compile
+src/web/css
+
+# IDEA
+.idea
