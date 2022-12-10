@@ -44,7 +44,7 @@
 // end
 
 * {
-  user-select: none;
+  //user-select: none;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -130,3 +130,15 @@ body, html {
   }
 }
 
+.info {
+  border: 2px solid @dark;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-weight: bold;
+  position: absolute;
+  right: @collapse;
+  bottom: @collapse;
+  .wh(calc(100% - 8 * @barWidth), @barWidth);
+  .childCenter();
+}

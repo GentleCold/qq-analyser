@@ -1,4 +1,4 @@
-/* global bar:false */
+/* global bar, info:false */
 function bindWindows () {
   document.querySelector('#min').addEventListener('click', bar.min)
   document.querySelector('#close').addEventListener('click', bar.close)
@@ -18,5 +18,14 @@ function bindGroupStyle () {
   })
 }
 
+function showInfo () {
+  const infobox = document.querySelector('.info')
+  info.get((event, data) => {
+    console.log(data)
+    infobox.innerHTML = data
+  })
+}
+
 bindWindows()
 bindGroupStyle()
+showInfo()
