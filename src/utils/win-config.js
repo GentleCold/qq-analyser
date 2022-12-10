@@ -10,7 +10,7 @@ const indexConfig = {
   maximizable: false,
   webPreferences: {
     // devTools: false,
-    preload: path.join(__dirname, 'preload/index-pre.js')
+    preload: path.join(__dirname, '../preload/index-pre.js')
   }
 }
 

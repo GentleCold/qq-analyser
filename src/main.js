@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
-const winConfig = require('./win-config')
+const winConfig = require('./utils/win-config')
+const qqData = require('./utils/db')
 const childProcess = require('child_process')
 const webSocket = require('ws')
 let indexWin, sever
@@ -18,28 +19,34 @@ app.whenReady().then(() => {
     indexWin.webContents.send('info', 'connect successfully')
     socket.send(JSON.stringify({ // get all group
       action: 'get_group_list',
-      echo: 'group'
+      echo: 'groups'
     }))
     // b. socket listener
     socket.on('message', mess => {
       // handle message
       const raw = JSON.parse(mess)
       if ('echo' in raw) { // group & sender
-        if (raw.echo === 'group') {
-          // save to group-db
-        } else if (raw.echo === 'sender') {
-          // save to sender-db
+        if (raw.echo === 'groups') {
+          for (const group in raw.data) {
+            // todo save to group-db
+            socket.send(JSON.stringify({
+              action: 'get_group_member_list',
+              params: {
+                group_id: group.group_id
+              },
+              echo: 'members'
+            }))
+          }
+          indexWin.webContents.send('info', raw.data)
+        } else if (raw.echo === 'members') {
+          for (const member in raw.data) {
+            // todo save to member-db
+          }
+          indexWin.webContents.send('info', raw.data)
         }
       } else if (raw.message_type === 'group') { // only group message
-        // save to message-db & get sender-info
-        socket.send(JSON.stringify({
-          action: 'get_group_member_info',
-          params: {
-            group_id: raw.group_id,
-            user_id: raw.user_id
-          },
-          echo: 'sender'
-        }))
+        // todo save to message-db
+        indexWin.webContents.send('info', raw)
       }
     })
     socket.on('error', err => {

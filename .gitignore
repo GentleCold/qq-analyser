@@ -14,3 +14,5 @@ src/web/css
 .idea
 
 go-cqhttp
+
+*.db
