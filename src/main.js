@@ -27,26 +27,55 @@ app.whenReady().then(() => {
       const raw = JSON.parse(mess)
       if ('echo' in raw) { // group & sender
         if (raw.echo === 'groups') {
-          for (const group in raw.data) {
-            // todo save to group-db
-            socket.send(JSON.stringify({
-              action: 'get_group_member_list',
-              params: {
-                group_id: group.group_id
-              },
-              echo: 'members'
-            }))
-          }
-          indexWin.webContents.send('info', raw.data)
+          raw.data.forEach(group => {
+            // save to group-db
+            qqData.run('replace into groupInfo values(?, ?, ?)', [
+              group.group_id,
+              group.group_name,
+              group.member_count
+            ], e => {
+              if (e) { console.log(e) } else {
+                socket.send(JSON.stringify({
+                  action: 'get_group_member_list',
+                  params: {
+                    group_id: group.group_id
+                  },
+                  echo: 'members'
+                }))
+              }
+            })
+          })
         } else if (raw.echo === 'members') {
-          for (const member in raw.data) {
-            // todo save to member-db
-          }
-          indexWin.webContents.send('info', raw.data)
+          indexWin.webContents.send('info', raw)
+          raw.data.forEach(member => {
+            // save to member-db
+            qqData.run('replace into member values(?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+              member.group_id,
+              member.user_id,
+              member.nickname,
+              member.card,
+              member.sex,
+              member.join_time,
+              member.role,
+              member.unfriendly,
+              member.title
+            ], e => {
+              if (e) console.log(e)
+            })
+          })
         }
       } else if (raw.message_type === 'group') { // only group message
-        // todo save to message-db
-        indexWin.webContents.send('info', raw)
+        // save to message-db
+        qqData.run('replace into message values(?, ?, ?, ?, ?, ?)', [
+          raw.message_id,
+          raw.group_id,
+          raw.user_id,
+          Boolean(raw.anonymous),
+          raw.message,
+          raw.time
+        ], e => {
+          if (e) console.log(e)
+        })
       }
     })
     socket.on('error', err => {
