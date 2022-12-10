@@ -8,4 +8,16 @@ qqData.serialize(() => {
   qqData.run('create table if not exists message(id int, group_id bigint, user_id bigint, anonymous boolean, message TEXT, time int, primary key(id));')
 })
 
+qqData.replaceInto = (table, ...args) => {
+  const len = args.length
+  let nq = '?,'
+  for (let i = 1; i < len; i++) {
+    nq += '?,'
+  }
+  nq += '?'
+  qqData.run(`replace into ${table} values(${nq})`, args, e => {
+    if (e) { console.log(e) }
+  })
+}
+
 module.exports = qqData
