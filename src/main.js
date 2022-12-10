@@ -43,7 +43,7 @@ app.whenReady().then(() => {
  */
 function cqhttpHandler (socket) {
   // handle message listener
-  socket.on('message', messageHandler.handle)
+  socket.on('message', messageHandler.handle.bind(messageHandler)) // pay attention to bind
   // actions
   wins.winIndex.send('info', 'connect successfully')
   socket.send(config.cqhttpApi.getGroupList())
@@ -67,7 +67,7 @@ class messageHandler {
   }
 
   static #handleGroups (raw) {
-    raw.data.forEach(group => {
+    raw.forEach(group => {
       // save to group-db
       qqData.replaceInto(
         'groupInfo',
@@ -79,7 +79,7 @@ class messageHandler {
 
   static #handleMembers (raw) {
     // save to member-db
-    raw.data.forEach(member => {
+    raw.forEach(member => {
       qqData.replaceInto(
         'member',
         member.group_id,

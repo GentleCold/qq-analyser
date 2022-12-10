@@ -10,7 +10,7 @@ qqData.serialize(() => {
 
 qqData.replaceInto = (table, ...args) => {
   const len = args.length
-  let nq = '?,'
+  let nq = ''
   for (let i = 1; i < len; i++) {
     nq += '?,'
   }
