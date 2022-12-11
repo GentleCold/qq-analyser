@@ -2,28 +2,29 @@
 @light: #f0f6f0;
 @barWidth: 48px;
 @collapse: 8px;
-
 @itemWidth: @barWidth - 2 * @collapse;
+
+@import "loading";
 
 // func
 
-.wh(@width, @height) {
+.wh (@width, @height) {
   width: @width;
   height: @height;
 }
 
-.childCenter() {
+.childCenter () {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.colorReverse() {
+.colorReverse () {
   background-color: @dark;
   color: @light;
 }
 
-.groupStyle(@back, @front) {
+.groupStyle (@back, @front) {
   background-color: @back;
   color: @front;
   .wh(calc(100% - 2 * @collapse), @itemWidth);
@@ -44,7 +45,7 @@
 // end
 
 * {
-  //user-select: none;
+  user-select: none;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -88,7 +89,7 @@ body, html {
 
 .sidebar {
   position: fixed;
-  .wh(2 * @barWidth, 100%);
+  .wh(2 * @barWidth, calc(100% - @barWidth));
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -141,4 +142,16 @@ body, html {
   bottom: @collapse;
   .wh(calc(100% - 8 * @barWidth), @barWidth);
   .childCenter();
+}
+
+.loading {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  text-align: center;
+  font-weight: bold;
+  .loading(@dark)
 }

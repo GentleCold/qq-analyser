@@ -1,0 +1,40 @@
+@-webkit-keyframes load{
+  0%{
+    opacity: 1;
+  }
+
+  100%{
+    opacity: 0;
+  }
+}
+
+.loading (@back) {
+  width: 150px;
+  height: 15px;
+  span {
+    display: inline-block;
+    width: 15px;
+    height: 100%;
+    margin-right: 5px;
+    background: @back;
+    -webkit-animation: load 1.04s ease infinite;
+    &:last-child {
+      margin-right: 0;
+    }
+    &:nth-child(1) {
+      -webkit-animation-delay:0.13s;
+    }
+    &:nth-child(2) {
+      -webkit-animation-delay:0.26s;
+    }
+    &:nth-child(3) {
+      -webkit-animation-delay:0.39s;
+    }
+    &:nth-child(4) {
+      -webkit-animation-delay:0.52s;
+    }
+    &:nth-child(5) {
+      -webkit-animation-delay:0.65s;
+    }
+  }
+}

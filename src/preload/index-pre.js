@@ -6,7 +6,7 @@ contextBridge.exposeInMainWorld('bar', {
 })
 
 contextBridge.exposeInMainWorld('info', {
-  get: (callback) => {
-    ipcRenderer.on('info', callback)
+  groups: (callback) => {
+    ipcRenderer.on('groups', callback)
   }
 })

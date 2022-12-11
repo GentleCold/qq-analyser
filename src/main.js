@@ -37,16 +37,16 @@ app.whenReady().then(() => {
 })
 
 // bundles for help
-
+let socket // connection between cqhttp and app
 /***
  * connection between cqhttp and app
  */
-function cqhttpHandler (socket) {
+function cqhttpHandler (connection) {
+  socket = connection
   // handle message listener
-  socket.on('message', messageHandler.handle.bind(messageHandler)) // pay attention to bind
+  connection.on('message', messageHandler.handle.bind(messageHandler)) // pay attention to bind
   // actions
-  wins.winIndex.send('info', 'connect successfully')
-  socket.send(config.cqhttpApi.getGroupList())
+  connection.send(config.cqhttpApi.getGroupList())
 }
 
 /***
@@ -58,8 +58,8 @@ class messageHandler {
     if ('echo' in raw) { // groups & members
       if (raw.echo === 'groups') {
         this.#handleGroups(raw.data)
-      } else if (raw.echo === 'members') {
-        this.#handleMembers(raw.data)
+      } else if (raw.echo === 'member') {
+        this.#handleMember(raw.data)
       }
     } else if (raw.message_type === 'group') { // only group message
       this.#handleMessage(raw)
@@ -67,7 +67,12 @@ class messageHandler {
   }
 
   static #handleGroups (raw) {
+    let count = 0
     raw.forEach(group => {
+      count++
+      // send to front
+      if (count === raw.length) wins.winIndex.send('groups', true, group.group_name)
+      else wins.winIndex.send('groups', false, group.group_name)
       // save to group-db
       qqData.replaceInto(
         'groupInfo',
@@ -77,21 +82,19 @@ class messageHandler {
     })
   }
 
-  static #handleMembers (raw) {
+  static #handleMember (raw) {
     // save to member-db
-    raw.forEach(member => {
-      qqData.replaceInto(
-        'member',
-        member.group_id,
-        member.user_id,
-        member.nickname,
-        member.card,
-        member.sex,
-        member.join_time,
-        member.role,
-        member.unfriendly,
-        member.title)
-    })
+    qqData.replaceInto(
+      'member',
+      raw.group_id,
+      raw.user_id,
+      raw.nickname,
+      raw.card,
+      raw.sex,
+      raw.join_time,
+      raw.role,
+      raw.unfriendly,
+      raw.title)
   }
 
   static #handleMessage (raw) {
@@ -104,5 +107,7 @@ class messageHandler {
       Boolean(raw.anonymous),
       raw.message,
       raw.time)
+    // get sender
+    socket.send(config.cqhttpApi.getMemberInfo(raw.group_id, raw.user_id))
   }
 }

@@ -7,8 +7,8 @@ class win {
     this.win.loadFile(viewPath)
   }
 
-  static send (channel, data) {
-    this.win.webContents.send(channel, data)
+  static send (channel, ...args) {
+    this.win.webContents.send(channel, ...args)
   }
 }
 

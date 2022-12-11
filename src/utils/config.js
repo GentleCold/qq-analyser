@@ -24,12 +24,13 @@ const cqhttpApi = {
     action: 'get_group_list',
     echo: 'groups'
   }),
-  getMemberList: (id) => JSON.stringify({
-    action: 'get_group_member_list',
+  getMemberInfo: (gid, uid) => JSON.stringify({
+    action: 'get_group_member_info',
     params: {
-      group_id: id
+      group_id: gid,
+      user_id: uid
     },
-    echo: 'members'
+    echo: 'member'
   })
 }
 
