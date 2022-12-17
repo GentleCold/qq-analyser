@@ -16,3 +16,4 @@ src/web/css
 go-cqhttp
 
 *.db
+*.log

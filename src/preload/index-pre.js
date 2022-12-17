@@ -8,5 +8,11 @@ contextBridge.exposeInMainWorld('bar', {
 contextBridge.exposeInMainWorld('info', {
   groups: (callback) => {
     ipcRenderer.on('groups', callback)
+  },
+  message: (callback) => {
+    ipcRenderer.on('message', callback)
+  },
+  restart: (callback) => {
+    ipcRenderer.on('restart', callback)
   }
 })

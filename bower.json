@@ -16,6 +16,7 @@
     "tests"
   ],
   "dependencies": {
-    "fontawesome": "^6.2.1"
+    "fontawesome": "^6.2.1",
+    "echarts": "^5.4.1"
   }
 }

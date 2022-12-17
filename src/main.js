@@ -1,7 +1,7 @@
 // open cqhttp firstly
 const path = require('path')
 const childProcess = require('child_process')
-childProcess.spawn('go-cqhttp_windows_386.exe', {
+childProcess.spawn('go-cqhttp_windows_386.exe -faststart', {
   cwd: path.join(process.cwd(), 'go-cqhttp/'),
   shell: true
 })
@@ -21,23 +21,14 @@ app.whenReady().then(() => {
   wins.winIndex.init(config.winIndex, path.join(__dirname, 'web/index.html'))
   // 2. close cqhttp before quit
   app.on('will-quit', () => {
-    // only way to kill the cqhttp
-    // process.kill and taskkill are useless
-    // loop must be sync
-    const stdout = childProcess.execSync('tasklist').toString().split('\n')
-    for (let i = 0, len = stdout.length; i < len; i++) {
-      const processInfo = stdout[i].trim().split(/\s+/)
-      if (processInfo[0] === 'go-cqhttp_windows_386.exe') {
-        process.kill(processInfo[1])
-        console.log(`process ${processInfo[0]} was killed`)
-        break
-      }
-    }
+    killCqhttp()
   })
 })
 
 // bundles for help
 let socket // connection between cqhttp and app
+let init = false; let startTime; let endTime
+
 /***
  * connection between cqhttp and app
  */
@@ -46,7 +37,22 @@ function cqhttpHandler (connection) {
   // handle message listener
   connection.on('message', messageHandler.handle.bind(messageHandler)) // pay attention to bind
   // actions
-  connection.send(config.cqhttpApi.getGroupList())
+  // 1. record time
+  startTime = new Date().getTime()
+  // 2. group list
+  if (!init) {
+    connection.send(config.cqhttpApi.getGroupList())
+    init = true
+  } else {
+    wins.winIndex.send('restart', true)
+  }
+  // 3. bug from cqhttp
+  // 15 minute per restart
+  setTimeout(() => {
+    killCqhttp()
+    startCqhttp()
+    wins.winIndex.send('restart', false)
+  }, 900000) // 15min
 }
 
 /***
@@ -102,12 +108,40 @@ class messageHandler {
     qqData.replaceInto(
       'message',
       raw.message_id,
+      raw.message_seq,
       raw.group_id,
       raw.user_id,
       Boolean(raw.anonymous),
       raw.message,
       raw.time)
     // get sender
-    socket.send(config.cqhttpApi.getMemberInfo(raw.group_id, raw.user_id))
+    if (!raw.anonymous) socket.send(config.cqhttpApi.getMemberInfo(raw.group_id, raw.user_id))
+    // send to front
+    wins.winIndex.send('message', raw)
   }
+}
+
+function killCqhttp () {
+  // only way to kill the cqhttp
+  // process.kill and taskkill are useless
+  // loop must be sync
+  const stdout = childProcess.execSync('tasklist').toString().split('\n')
+  for (let i = 0, len = stdout.length; i < len; i++) {
+    const processInfo = stdout[i].trim().split(/\s+/)
+    if (processInfo[0] === 'go-cqhttp_windows_386.exe') {
+      process.kill(processInfo[1])
+      console.log(`process ${processInfo[0]} was killed`)
+      endTime = new Date().getTime()
+      qqData.replaceInto('recordTime', startTime, endTime)
+      break
+    }
+  }
+}
+
+function startCqhttp () {
+  childProcess.spawn('go-cqhttp_windows_386.exe -faststart', {
+    cwd: path.join(process.cwd(), 'go-cqhttp/'),
+    shell: true
+  })
+  console.log('start cqhttp')
 }
