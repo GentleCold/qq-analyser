@@ -22,6 +22,7 @@ app.whenReady().then(() => {
   // 2. close cqhttp before quit
   app.on('will-quit', () => {
     killCqhttp()
+    if (startTime) qqData.replaceInto('recordTime', startTime, endTime)
   })
 })
 
@@ -132,7 +133,6 @@ function killCqhttp () {
       process.kill(processInfo[1])
       console.log(`process ${processInfo[0]} was killed`)
       endTime = new Date().getTime()
-      qqData.replaceInto('recordTime', startTime, endTime)
       break
     }
   }
