@@ -20,19 +20,12 @@ function bindGroupStyle () {
 }
 
 function handleInfo () {
-  const sidebar = document.querySelector('.sidebar')
   const loading = document.querySelector('.loading')
   const text = document.querySelector('.loading p')
   info.groups((event, ifEnd, data) => {
-    const group = document.createElement('div')
-    group.className = 'group'
-    group.innerHTML = `<i class="fa-solid fa-user-group"></i><p>${data}</p>`
-    sidebar.appendChild(group)
     if (ifEnd) {
       loading.style.display = 'none'
       bindGroupStyle()
-    } else {
-      text.innerHTML = 'loading groups...'
     }
   })
   info.restart((event, ifEnd) => {
@@ -46,6 +39,7 @@ function handleInfo () {
 }
 
 bindWindows()
+bindGroupStyle()
 handleInfo()
 
 // charts
