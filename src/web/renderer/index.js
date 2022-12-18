@@ -41,6 +41,7 @@ function bindNextChart () {
   document.querySelector('#chart').addEventListener('click', () => {
     if (init) {
       chartIndex = (chartIndex + 1) % chartsDom.length
+      // elegant!!!!!!
       chartsDom[chartIndex].scrollIntoView({
         behavior: 'smooth',
         block: 'center',
@@ -157,7 +158,8 @@ function buildChartLine () {
       backgroundColor: '#f0f6f0',
       trigger: 'axis',
       formatter: function (params) {
-        let result = ''
+        const time = new Date(params[0].value[0])
+        let result = `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}<br>`
         params.sort((a, b) => {
           return b.value[1] - a.value[1]
         })
