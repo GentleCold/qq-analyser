@@ -5,6 +5,7 @@
 @itemWidth: @barWidth - 2 * @collapse;
 
 @import "loading";
+@import "scroll-bar";
 
 // func
 
@@ -23,7 +24,7 @@
   background-color: @dark;
   color: @light;
 }
-
+// discarded
 .groupStyle (@back, @front) {
   background-color: @back;
   color: @front;
@@ -60,7 +61,7 @@ body, html {
   display: flex;
   justify-content: flex-end;
   margin-left: auto;
-  border-bottom: 2px solid @dark;
+  box-shadow: 0 5px 10px lighten(@dark, 50%);
   color: @dark;
   font-weight: bold;
   -webkit-app-region: drag;
@@ -84,48 +85,6 @@ body, html {
   }
   #close {
     margin-right: @collapse;
-  }
-}
-
-.sidebar {
-  z-index: 1;
-  position: fixed;
-  .wh(2 * @barWidth, calc(100% - @barWidth));
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  border-right: 2px solid @dark;
-  color: @dark;
-  transition: .1s all linear;
-  .group {
-    .groupStyle(@light, @dark);
-    &:hover {
-      background-color: lighten(@dark, 50%);
-    }
-  }
-  .selected-group {
-    .groupStyle(@dark, @light);
-  }
-  // scroll bar
-  overflow-y: auto;
-  &::-webkit-scrollbar {
-    width: @collapse;
-  }
-  &::-webkit-scrollbar-track {
-    background-color: @light;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-style: dashed;
-    border-color: transparent;
-    border-width: 2px;
-    background-color: @dark;
-    background-clip: padding-box;
-    &:hover {
-      background: @dark;
-    }
-  }
-  &::-webkit-scrollbar-button {
-    display: none;
   }
 }
 
@@ -156,7 +115,7 @@ body, html {
 
 .chart {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  .wh(calc(100% - 2 * @barWidth), calc(100% - @barWidth));
+  top: @barWidth;
+  padding: calc(2 * @collapse) calc(4 * @collapse);
+  .wh(100%, calc(100% - @barWidth));
 }

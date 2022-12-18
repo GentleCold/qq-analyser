@@ -1,0 +1,22 @@
+.scrollBar (@collapse, @back, @front) {
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: @collapse;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: @back;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-style: dashed;
+    border-color: transparent;
+    border-width: 2px;
+    background-color: @front;
+    background-clip: padding-box;
+    &:hover {
+      background: @front;
+    }
+  }
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+}

@@ -4,28 +4,12 @@ function bindWindows () {
   document.querySelector('#close').addEventListener('click', bar.close)
 }
 
-function bindGroupStyle () {
-  let index = 0
-  const groups = document.querySelectorAll('.sidebar > div')
-  groups[0].className = 'selected-group'
-  groups.forEach((item, i) => {
-    item.addEventListener('click', () => {
-      if (index !== i) {
-        item.className = 'selected-group'
-        groups[index].className = 'group'
-        index = i
-      }
-    })
-  })
-}
-
 function handleInfo () {
   const loading = document.querySelector('.loading')
   const text = document.querySelector('.loading p')
   info.groups((event, ifEnd, data) => {
     if (ifEnd) {
       loading.style.display = 'none'
-      bindGroupStyle()
     }
   })
   info.restart((event, ifEnd) => {
@@ -39,7 +23,6 @@ function handleInfo () {
 }
 
 bindWindows()
-bindGroupStyle()
 handleInfo()
 
 // charts
