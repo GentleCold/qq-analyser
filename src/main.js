@@ -85,9 +85,9 @@ class messageHandler {
       checkNums++
       // send to front
       if (checkNums === groupNums) {
-        wins.winIndex.send('groups', true, group.group_name)
+        wins.winIndex.send('groups', true, group)
         checkNums = 0
-      } else wins.winIndex.send('groups', false, group.group_name)
+      } else wins.winIndex.send('groups', false, group)
       // save to group-db
       qqData.replaceInto(
         'groupInfo',
