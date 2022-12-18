@@ -6,7 +6,7 @@ childProcess.spawn('go-cqhttp_windows_386.exe -faststart', {
   shell: true
 })
 // electron
-const { app } = require('electron')
+const { ipcMain, app } = require('electron')
 // mine
 const wins = require('./utils/wins')
 const config = require('./utils/config')
@@ -19,7 +19,9 @@ sever.on('connection', cqhttpHandler)
 app.whenReady().then(() => {
   // 1. init windows
   wins.winIndex.init(config.winIndex, path.join(__dirname, 'web/index.html'))
-  // 2. close cqhttp before quit
+  // 2. global ipc
+  globalIpc()
+  // 3. close cqhttp before quit
   app.on('will-quit', () => {
     killCqhttp()
     if (startTime) qqData.replaceInto('recordTime', startTime, endTime)
@@ -28,7 +30,8 @@ app.whenReady().then(() => {
 
 // bundles for help
 let socket // connection between cqhttp and app
-let init = false; let startTime; let endTime
+let startTime, endTime
+let init = false; let groupNums = 0; let checkNums = 0
 
 /***
  * connection between cqhttp and app
@@ -67,6 +70,8 @@ class messageHandler {
         this.#handleGroups(raw.data)
       } else if (raw.echo === 'member') {
         this.#handleMember(raw.data)
+      } else if (raw.echo === 'members') {
+        this.#handleMembers(raw.data)
       }
     } else if (raw.message_type === 'group') { // only group message
       this.#handleMessage(raw)
@@ -74,12 +79,15 @@ class messageHandler {
   }
 
   static #handleGroups (raw) {
-    let count = 0
+    groupNums = raw.length
+    qqData.run('delete from groupInfo')
     raw.forEach(group => {
-      count++
+      checkNums++
       // send to front
-      if (count === raw.length) wins.winIndex.send('groups', true, group.group_name)
-      else wins.winIndex.send('groups', false, group.group_name)
+      if (checkNums === groupNums) {
+        wins.winIndex.send('groups', true, group.group_name)
+        checkNums = 0
+      } else wins.winIndex.send('groups', false, group.group_name)
       // save to group-db
       qqData.replaceInto(
         'groupInfo',
@@ -101,7 +109,13 @@ class messageHandler {
       raw.join_time,
       raw.role,
       raw.unfriendly,
-      raw.title)
+      raw.last_sent_time)
+  }
+
+  static #handleMembers (raw) {
+    raw.forEach(member => {
+      this.#handleMember(member)
+    })
   }
 
   static #handleMessage (raw) {
@@ -144,4 +158,15 @@ function startCqhttp () {
     shell: true
   })
   console.log('start cqhttp')
+}
+
+function globalIpc () {
+  ipcMain.handle('get-member', () => {
+    qqData.all('select id from groupInfo', (err, rows) => {
+      if (err) console.log(err)
+      rows.forEach(group => {
+        socket.send(config.cqhttpApi.getMemberList(group.id))
+      })
+    })
+  })
 }

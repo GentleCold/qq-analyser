@@ -72,36 +72,48 @@ body, html {
     height: @itemWidth;
     .childCenter();
   }
-  .bar-btn {
-    .wh(@itemWidth, @itemWidth);
-    .childCenter();
-    margin: @collapse calc(@collapse / 2);
-    transition: .2s all linear;
-    cursor: pointer;
-    -webkit-app-region: no-drag;
-    &:hover {
-      .colorReverse();
-    }
-  }
   #close {
     margin-right: @collapse;
   }
 }
 
-.info {
-  border: 2px solid @dark;
-  font-size: 12px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  font-weight: bold;
-  position: absolute;
-  right: @collapse;
-  bottom: @collapse;
-  .wh(calc(100% - 8 * @barWidth), @barWidth);
+.bar-btn {
+  .wh(@itemWidth, @itemWidth);
   .childCenter();
+  margin: @collapse calc(@collapse / 2);
+  transition: .2s all linear;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+  &:hover {
+    .colorReverse();
+  }
+}
+
+.infoBox {
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  .wh(50%, calc(50% - @barWidth));
+  padding: calc(2 * @collapse) calc(4 * @collapse);
+  font-weight: bold;
+  background-color: @light;
+  box-shadow: 0 5px 10px lighten(@dark, 50%);
+  .childCenter();
+  .box {
+    position: absolute;
+    bottom: @collapse;
+    right: calc(@collapse / 2);
+    .childCenter();
+  }
+  display: none;
 }
 
 .loading {
+  z-index: 3;
   position: absolute;
   top: 0;
   bottom: 0;

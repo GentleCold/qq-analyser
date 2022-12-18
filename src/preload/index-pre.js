@@ -2,7 +2,8 @@ const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('bar', {
   close: () => ipcRenderer.invoke('close-index'),
-  min: () => ipcRenderer.invoke('min-index')
+  min: () => ipcRenderer.invoke('min-index'),
+  getMember: () => ipcRenderer.invoke('get-member')
 })
 
 contextBridge.exposeInMainWorld('info', {
@@ -14,5 +15,8 @@ contextBridge.exposeInMainWorld('info', {
   },
   restart: (callback) => {
     ipcRenderer.on('restart', callback)
+  },
+  memberFinish: (callback) => {
+    ipcRenderer.on('member-finish', callback)
   }
 })

@@ -1,15 +1,42 @@
 /* global bar, info, echarts:false */
+const loading = document.querySelector('.loading')
+const text = document.querySelector('.loading p')
+let init = false
 function bindWindows () {
   document.querySelector('#min').addEventListener('click', bar.min)
   document.querySelector('#close').addEventListener('click', bar.close)
 }
 
+function bindGetMember () {
+  let action = false
+  const infoBox = document.querySelector('.infoBox')
+  document.querySelector('#member').addEventListener('click', () => {
+    if (init && !action) {
+      infoBox.style.display = 'flex'
+      action = true
+    }
+  })
+  document.querySelector('#no').addEventListener('click', () => {
+    infoBox.style.display = 'none'
+    action = false
+  })
+  document.querySelector('#yep').addEventListener('click', () => {
+    infoBox.style.display = 'none'
+    loading.style.display = 'block'
+    text.innerHTML = 'waiting...'
+    bar.getMember()
+  })
+  info.memberFinish(() => {
+    loading.style.display = 'none'
+    action = false
+  })
+}
+
 function handleInfo () {
-  const loading = document.querySelector('.loading')
-  const text = document.querySelector('.loading p')
   info.groups((event, ifEnd, data) => {
     if (ifEnd) {
       loading.style.display = 'none'
+      init = true
     }
   })
   info.restart((event, ifEnd) => {
@@ -23,6 +50,7 @@ function handleInfo () {
 }
 
 bindWindows()
+bindGetMember()
 handleInfo()
 
 // charts
@@ -101,3 +129,7 @@ setInterval(() => {
 }, 10000) // 10s
 
 chartDom.setOption(option)
+
+window.onresize = () => {
+  chartDom.resize()
+}
