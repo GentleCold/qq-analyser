@@ -52,11 +52,15 @@
   padding: 0;
 }
 
+::-webkit-scrollbar { width: 0 !important }
+
 body, html {
   background-color: @light;
 }
 
 .bar {
+  z-index: 4;
+  position: fixed;
   .wh(100%, @barWidth);
   display: flex;
   justify-content: flex-end;
@@ -91,7 +95,7 @@ body, html {
 
 .infoBox {
   z-index: 2;
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
@@ -114,7 +118,7 @@ body, html {
 
 .loading {
   z-index: 3;
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
@@ -125,9 +129,13 @@ body, html {
   .loading(@dark)
 }
 
-.chart-rank {
+.chart {
   position: absolute;
   top: @barWidth;
   padding: calc(2 * @collapse) calc(4 * @collapse);
   .wh(100%, calc(100% - @barWidth));
+}
+
+.chart-line {
+  left: 100%;
 }

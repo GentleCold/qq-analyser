@@ -67,11 +67,11 @@ class messageHandler {
     const raw = JSON.parse(mess)
     if ('echo' in raw) { // groups & members
       if (raw.echo === 'groups') {
-        this.#handleGroups(raw.data)
+        if (raw.data) this.#handleGroups(raw.data)
       } else if (raw.echo === 'member') {
-        this.#handleMember(raw.data)
+        if (raw.data) this.#handleMember(raw.data)
       } else if (raw.echo === 'members') {
-        this.#handleMembers(raw.data)
+        if (raw.data) this.#handleMembers(raw.data)
       }
     } else if (raw.message_type === 'group') { // only group message
       this.#handleMessage(raw)
@@ -80,7 +80,6 @@ class messageHandler {
 
   static #handleGroups (raw) {
     groupNums = raw.length
-    qqData.run('delete from groupInfo')
     raw.forEach(group => {
       checkNums++
       // send to front

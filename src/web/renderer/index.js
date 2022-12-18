@@ -1,8 +1,12 @@
 /* global bar, info, echarts:false */
 const loading = document.querySelector('.loading')
 const text = document.querySelector('.loading p')
-const datum = {}; const counts = {}; const groupName = {}
-let init = false
+const counts = {}; const totalCounts = {}; const groupName = {}; const datum = {}
+const chartsDom = [document.querySelector('.chart-rank'), document.querySelector('.chart-line')]
+const chartRank = echarts.init(chartsDom[0])
+const chartLine = echarts.init(chartsDom[1])
+let init = false; let chartIndex = 0
+
 function bindWindows () {
   document.querySelector('#min').addEventListener('click', bar.min)
   document.querySelector('#close').addEventListener('click', bar.close)
@@ -33,15 +37,35 @@ function bindGetMember () {
   })
 }
 
+function bindNextChart () {
+  document.querySelector('#chart').addEventListener('click', () => {
+    if (init) {
+      chartIndex = (chartIndex + 1) % chartsDom.length
+      chartsDom[chartIndex].scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'nearest'
+      })
+    }
+  })
+}
+
 function handleInfo () {
   info.groups((event, ifEnd, data) => {
     if (ifEnd) {
       loading.style.display = 'none'
       init = true
+      buildChartRank()
+      buildChartLine()
+      window.onresize = () => {
+        chartRank.resize()
+        chartLine.resize()
+      }
     }
-    groupName[data.group_id] = data.group_name
     datum[data.group_id] = []
+    groupName[data.group_id] = data.group_name
     counts[data.group_id] = 0
+    totalCounts[data.group_name] = 0
   })
   info.restart((event, ifEnd) => {
     if (ifEnd) {
@@ -53,20 +77,81 @@ function handleInfo () {
   })
   info.message((event, data) => {
     counts[data.group_id]++
+    totalCounts[groupName[data.group_id]]++
   })
 }
 
 bindWindows()
 bindGetMember()
+bindNextChart()
 handleInfo()
 
 // charts
 
 function buildChartRank () {
-  const chartRank = echarts.init(document.querySelector('.chart-rank'))
+  const option = {
+    color: '#222323',
+    title: {
+      left: 'center',
+      text: 'Total message nums ranking'
+    },
+    xAxis: {
+      max: 'dataMax'
+    },
+    grid: {
+      containLabel: true
+    },
+    yAxis: {
+      type: 'category',
+      data: Object.keys(totalCounts),
+      inverse: true,
+      animationDuration: 300,
+      animationDurationUpdate: 300,
+      max: 4,
+      splitLine: {
+        show: false
+      }
+    },
+    series: [
+      {
+        realtimeSort: true,
+        type: 'bar',
+        label: {
+          show: true,
+          position: 'right',
+          valueAnimation: true
+        },
+        emphasis: {
+          focus: 'series'
+        }
+      }
+    ],
+    animationDuration: 0,
+    animationDurationUpdate: 300,
+    animationEasing: 'linear',
+    animationEasingUpdate: 'linear'
+  }
+  chartRank.setOption(option)
+  setInterval(() => {
+    chartRank.setOption({
+      series: [
+        {
+          type: 'bar',
+          data: Object.values(totalCounts)
+        }
+      ]
+    })
+  }, 1000) // 1s
+}
+
+function buildChartLine () {
   const option = {
     title: {
+      left: 'center',
       text: 'Message nums per 10s'
+    },
+    grid: {
+      containLabel: true
     },
     tooltip: {
       backgroundColor: '#f0f6f0',
@@ -96,10 +181,11 @@ function buildChartRank () {
       }
     }
   }
-  chartRank.setOption(option)
+  chartLine.setOption(option)
   setInterval(() => {
     const now = new Date()
     for (const id in counts) {
+      if (datum[id].length > 1000) datum[id].shift()
       datum[id].push({
         name: now.toString(),
         value: [
@@ -109,7 +195,7 @@ function buildChartRank () {
         ]
       })
     }
-    chartRank.setOption({
+    chartLine.setOption({
       series: buildSeries()
     })
     for (const id in counts) {
@@ -132,10 +218,4 @@ function buildChartRank () {
     }
     return seriesList
   }
-
-  window.onresize = () => {
-    chartRank.resize()
-  }
 }
-
-buildChartRank()
