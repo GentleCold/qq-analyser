@@ -5,7 +5,8 @@ const counts = {}; const totalCounts = {}; const groupName = {}; const datum = {
 const chartsDom = [document.querySelector('.chart-rank'), document.querySelector('.chart-line')]
 const chartRank = echarts.init(chartsDom[0])
 const chartLine = echarts.init(chartsDom[1])
-let init = false; let chartIndex = 0
+const marqueeTop = 10
+let init = false; let chartIndex = 0; let marqueeNum = 0
 
 function bindWindows () {
   document.querySelector('#min').addEventListener('click', bar.min)
@@ -79,6 +80,26 @@ function handleInfo () {
   info.message((event, data) => {
     counts[data.group_id]++
     totalCounts[groupName[data.group_id]]++
+    // marquee
+    if (marqueeNum >= marqueeTop) return
+    marqueeNum++
+    const marqueeBox = document.querySelector('.marqueeBox')
+    const marquee = document.createElement('div')
+    marquee.className = 'marquee'
+    marquee.innerText = data.message.replace(/\[CQ.*?]/g, '[CQ code]')
+    marqueeBox.appendChild(marquee)
+    const maxTop = marqueeBox.clientHeight - marquee.offsetHeight
+    marquee.style.top = Math.round(Math.random() * maxTop) + 'px'
+    const timer = setInterval(() => {
+      let left = marquee.offsetLeft
+      left -= 1
+      marquee.style.left = left + 'px'
+      if (left < -marquee.offsetWidth) {
+        clearInterval(timer)
+        marquee.remove()
+        marqueeNum--
+      }
+    }, 10)
   })
 }
 
@@ -187,6 +208,7 @@ function buildChartLine () {
   chartLine.setOption(option)
   setInterval(() => {
     const now = new Date()
+    let text = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}<br>`
     for (const id in counts) {
       if (datum[id].length > 1000) datum[id].shift()
       datum[id].push({
@@ -197,10 +219,17 @@ function buildChartLine () {
           groupName[id]
         ]
       })
+      if (counts[id] > 0) {
+        text += `${groupName[id]}: ${counts[id]}<br>`
+      }
     }
+    // show for card
+    document.querySelector('.card').innerHTML = text
+    // reset option
     chartLine.setOption({
       series: buildSeries()
     })
+    // clear counts
     for (const id in counts) {
       counts[id] = 0
     }
