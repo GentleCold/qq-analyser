@@ -35,6 +35,10 @@
     "directories": {
       "output": "build"
     },
+    "extraResources": {
+      "from": "./extra",
+      "to": "../utils"
+    },
     "win": {
       "icon": "",
       "target": [

@@ -18,3 +18,4 @@ go-cqhttp
 *.db
 *.log
 .ipynb_checkpoints
+extra
