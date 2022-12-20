@@ -107,11 +107,21 @@ body, html {
   background-color: @light;
   box-shadow: 0 5px 10px lighten(@dark, 50%);
   .childCenter();
-  .btnBox {
+  .info-btn {
+    padding: @collapse calc(2 * @collapse);
+    transition: .2s all linear;
+    cursor: pointer;
     position: absolute;
-    bottom: @collapse;
-    right: calc(@collapse / 2);
-    .childCenter();
+    bottom: 2 * @collapse;
+    &:hover {
+      .colorReverse()
+    }
+  }
+  #yep {
+    right: 2 * @collapse;
+  }
+  #no {
+    left: 2 * @collapse;
   }
   display: none;
 }
@@ -150,6 +160,14 @@ body, html {
   .wh(4 * @barWidth, 2 * @barWidth);
   box-shadow: 0 5px 10px lighten(@dark, 50%);
   .childCenter()
+}
+
+.cloudBox {
+  left: 100%;
+  transform: translateX(calc(-100% - 2 * @collapse));
+  .cloud {
+    .wh(100%, 100%);
+  }
 }
 
 .marqueeBox {

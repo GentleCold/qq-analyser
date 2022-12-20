@@ -1,4 +1,5 @@
 const { ipcMain, BrowserWindow } = require('electron')
+const jieBa = require('@node-rs/jieba')
 
 class win {
   static win
@@ -28,6 +29,16 @@ class winIndex extends win {
     })
     ipcMain.handle('min-index', () => {
       this.win.minimize()
+    })
+    ipcMain.handle('cut-word', (event, text) => {
+      const result = jieBa.extract(text, 100)
+      this.send('return-word', result)
+    })
+    ipcMain.handle('pin', () => {
+      this.win.setAlwaysOnTop(true)
+    })
+    ipcMain.handle('unpin', () => {
+      this.win.setAlwaysOnTop(false)
     })
   }
 

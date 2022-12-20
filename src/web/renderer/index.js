@@ -1,12 +1,12 @@
-/* global bar, info, echarts:false */
+/* global bar, info, echarts, word:false */
 const loading = document.querySelector('.loading')
 const text = document.querySelector('.loading p')
-const counts = {}; const totalCounts = {}; const groupName = {}; const datum = {}
+const counts = {}; const totalCounts = {}; const groupName = {}; const datum = {}; const legendName = []
 const chartsDom = [document.querySelector('.chart-rank'), document.querySelector('.chart-line')]
 const chartRank = echarts.init(chartsDom[0])
 const chartLine = echarts.init(chartsDom[1])
 const marqueeTop = 10
-let init = false; let chartIndex = 0; let marqueeNum = 0
+let init = false; let chartIndex = 0; let marqueeNum = 0; let messageText = ''; let pined = false
 
 function bindWindows () {
   document.querySelector('#min').addEventListener('click', bar.min)
@@ -52,6 +52,23 @@ function bindNextChart () {
   })
 }
 
+function bindPin () {
+  const pin = document.querySelector('#pin')
+  pin.addEventListener('click', () => {
+    if (pined) {
+      bar.unpin()
+      pined = false
+      pin.style.color = '#222323'
+      pin.style.backgroundColor = '#f0f6f0'
+    } else {
+      bar.pin()
+      pined = true
+      pin.style.color = '#f0f6f0'
+      pin.style.backgroundColor = '#222323'
+    }
+  })
+}
+
 function handleInfo () {
   info.groups((event, ifEnd, data) => {
     if (ifEnd) {
@@ -80,6 +97,7 @@ function handleInfo () {
   info.message((event, data) => {
     counts[data.group_id]++
     totalCounts[groupName[data.group_id]]++
+    messageText += data.message.replace(/\[CQ.*?]/g, '')
     // marquee
     if (marqueeNum >= marqueeTop) return
     marqueeNum++
@@ -101,11 +119,19 @@ function handleInfo () {
       }
     }, 10)
   })
+  const cloud = document.querySelector('.cloudBox')
+  word.get((event, result) => {
+    cloud.innerHTML = ''
+    for (let i = 0; i < result.length && i < 5; i++) {
+      cloud.innerHTML += result[i].keyword + '<br>'
+    }
+  })
 }
 
 bindWindows()
 bindGetMember()
 bindNextChart()
+bindPin()
 handleInfo()
 
 // charts
@@ -175,6 +201,11 @@ function buildChartLine () {
     grid: {
       containLabel: true
     },
+    legend: {
+      show: true,
+      type: 'scroll',
+      top: '36px'
+    },
     tooltip: {
       backgroundColor: '#f0f6f0',
       trigger: 'axis',
@@ -199,7 +230,6 @@ function buildChartLine () {
     },
     yAxis: {
       type: 'value',
-      boundaryGap: [0, '100%'],
       splitLine: {
         show: false
       }
@@ -221,13 +251,20 @@ function buildChartLine () {
       })
       if (counts[id] > 0) {
         text += `${groupName[id]}: ${counts[id]}<br>`
+        legendName.push(groupName[id])
       }
     }
     // show for card
     document.querySelector('.card').innerHTML = text
+    // show for word
+    word.cut(messageText)
+    messageText = ''
     // reset option
     chartLine.setOption({
-      series: buildSeries()
+      series: buildSeries(),
+      legend: {
+        data: legendName
+      }
     })
     // clear counts
     for (const id in counts) {
