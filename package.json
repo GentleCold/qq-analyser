@@ -1,8 +1,8 @@
 {
   "name": "qq-analyser",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Analyser for qq group",
-  "main": "src/main.js",
+  "main": "dist/main.js",
   "scripts": {
     "init": "npm install & bower install",
     "build": "electron-builder build",
@@ -36,18 +36,18 @@
     "directories": {
       "output": "build"
     },
+    "files": [
+      "dist/**"
+    ],
     "extraResources": {
       "from": "./extra",
       "to": "../utils"
     },
     "win": {
-      "icon": "",
+      "icon": "./dist/icon/app.ico",
       "target": [
         {
-          "target": "nsis",
-          "arch": [
-            "ia32"
-          ]
+          "target": "nsis"
         }
       ]
     },
@@ -55,7 +55,7 @@
       "oneClick": false,
       "allowElevation": true,
       "allowToChangeInstallationDirectory": true,
-      "installerIcon": "",
+      "installerIcon": "./dist/icon/app.ico",
       "uninstallerIcon": "",
       "installerHeaderIcon": "",
       "createDesktopShortcut": true,

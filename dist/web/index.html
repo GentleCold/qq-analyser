@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self'"
+  />
+  <link rel="stylesheet" href="css/index.css" />
+  <link rel="stylesheet" href="lib/fontawesome/css/all.min.css">
+  <title>Title</title>
+</head>
+<body>
+  <div class="bar">
+    <div class="brand">QQ-Analyser</div>
+    <div class="bar-btn" id="pin"><i class="fa-solid fa-thumbtack"></i></div>
+    <div class="bar-btn" id="member"><i class="fa-solid fa-user-group"></i></div>
+    <div class="bar-btn" id="chart"><i class="fa-solid fa-caret-right"></i></div>
+    <div class="bar-btn" id="min"><i class="fa-solid fa-minus"></i></div>
+    <div class="bar-btn" id="close"><i class="fa-solid fa-xmark"></i></div>
+  </div>
+  <div class="infoBox">
+    <p>Getting group members.<br>May cause error, boss.</p>
+    <div class="info-btn" id="no">Fine</div>
+    <div class="info-btn" id="yep">Go on</div>
+  </div>
+  <div class="chart chart-rank"></div>
+  <div class="chart chart-line"></div>
+  <div class="card"></div>
+  <div class="card cloudBox"></div>
+  <div class="marqueeBox">
+<!--    <div class="marquee">666</div>-->
+  </div>
+  <div class="loading">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <p>
+      loading cqhttp...
+    <p>
+  </div>
+</body>
+  <script src="lib/echarts.min.js"></script>
+  <script src="renderer/index.js"></script>
+</html>
