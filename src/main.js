@@ -169,3 +169,9 @@ function globalIpc () {
     })
   })
 }
+
+// one app at a time
+const gotTheLock = app.requestSingleInstanceLock()
+if (!gotTheLock) {
+  app.quit()
+}
