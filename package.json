@@ -10,7 +10,7 @@
   },
   "keywords": [],
   "author": "GentleCold",
-  "license": "MIT",
+  "license": "AGPL-3.0",
   "devDependencies": {
     "echarts-wordcloud": "^2.1.0",
     "electron": "^22.0.0",
