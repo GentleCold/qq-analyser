@@ -20,3 +20,4 @@ go-cqhttp
 .ipynb_checkpoints
 extra
 py/out
+doc
