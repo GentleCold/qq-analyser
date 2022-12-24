@@ -17,6 +17,9 @@
   - [ ] 情绪拟合
   - [ ] 加群人数预测
   - [ ] 不活跃成员
+## 部分截图
+![image](https://github.com/GentleCold/qq-analyser/blob/master/img/img1.png)
+![image](https://github.com/GentleCold/qq-analyser/blob/master/img/img2.png)
 ## 食用
 ***
 #### 初次启动后，到目录 ```/YourApp/utils/go-cqhttp/```下
