@@ -18,12 +18,22 @@
   - [ ] 加群人数预测
   - [ ] 不活跃成员
 ## 食用
+***
 #### 初次启动后，到目录 ```/YourApp/utils/go-cqhttp/```下
 #### 打开```qrcode.png```，手机 qq 扫码登陆
+***
 #### 若显示过期，则重新启动软件，再重复上述步骤
 #### 登陆一次后不用再登陆
 ## 配合 python
+#### 注意，此部分尚未集成进软件，只建议对 python 有经验者参考使用
 #### 软件启动后会在目录```/YourApp/utils/```生成 qq.db，若有相应 python 环境，则可使用项目中 ```py/*.ipynb```文件生成报告
+#### 请先安装 jupyter-notebook, 修改项目 py 文件夹下 ipynb 后缀文件中 ```conn = sqlite3.connect('../sqlite3/qq.db')``` 语句，将位置自行定位到软件安装目录下 ```utils/qq.db``` 处，之后使用 jupyter 运行
+#### 所需其他 python 包
+* pandas
+* jieba
+* sklearn
+* wordcloud
+* snownlp
 ## 已知问题
 #### 1. 首次启动会有无法打开数据库的报错，可忽略
 #### 解决办法：重新启动后即可正常创建数据库 qq.db
