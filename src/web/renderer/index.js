@@ -71,6 +71,12 @@ function bindPin () {
 
 function handleInfo () {
   info.groups((event, ifEnd, data) => {
+    if (data) {
+      datum[data.group_id] = []
+      groupName[data.group_id] = data.group_name
+      counts[data.group_id] = 0
+      totalCounts[data.group_name] = 0
+    }
     if (ifEnd) {
       loading.style.display = 'none'
       init = true
@@ -80,11 +86,8 @@ function handleInfo () {
         chartRank.resize()
         chartLine.resize()
       }
+      document.querySelector('.brand').innerHTML = `QQ-Analyser (load ${Object.keys(datum).length} groups totally)`
     }
-    datum[data.group_id] = []
-    groupName[data.group_id] = data.group_name
-    counts[data.group_id] = 0
-    totalCounts[data.group_name] = 0
   })
   info.restart((event, ifEnd) => {
     if (ifEnd) {
