@@ -80,6 +80,9 @@ class messageHandler {
 
   static #handleGroups (raw) {
     groupNums = raw.length
+    if (groupNums === 0) {
+      wins.winIndex.send('groups', true, false)
+    }
     raw.forEach(group => {
       checkNums++
       // send to front
