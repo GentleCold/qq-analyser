@@ -3,10 +3,7 @@ const { ipcMain, app } = require('electron')
 // open cqhttp firstly
 const path = require('path')
 const childProcess = require('child_process')
-childProcess.spawn('go-cqhttp_windows_386.exe -faststart', {
-  cwd: path.join(path.dirname(app.getPath('exe')), 'utils/go-cqhttp/'),
-  shell: true
-})
+startCqhttp()
 // mine
 const wins = require('./utils/wins')
 const config = require('./utils/config')
@@ -156,7 +153,7 @@ function killCqhttp () {
 
 function startCqhttp () {
   childProcess.spawn('go-cqhttp_windows_386.exe -faststart', {
-    cwd: path.join(process.cwd(), 'go-cqhttp/'),
+    cwd: path.join(path.dirname(app.getPath('exe')), 'utils/go-cqhttp/'),
     shell: true
   })
   console.log('start cqhttp')
