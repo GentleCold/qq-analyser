@@ -1,11 +1,15 @@
 /* global bar, info, echarts, word:false */
 const loading = document.querySelector('.loading')
 const text = document.querySelector('.loading p')
+// datum to show in charts
 const counts = {}; const totalCounts = {}; const groupName = {}; const datum = {}; const legendName = []
 const chartsDom = [document.querySelector('.chart-rank'), document.querySelector('.chart-line')]
+// two charts
 const chartRank = echarts.init(chartsDom[0])
 const chartLine = echarts.init(chartsDom[1])
+// max marquee nums
 const marqueeTop = 10
+// other global var for use
 let init = false; let chartIndex = 0; let marqueeNum = 0; let messageText = ''; let pined = false
 
 function bindWindows () {
@@ -70,25 +74,31 @@ function bindPin () {
 }
 
 function handleInfo () {
+  // group list to judge whether go-cqhttp has loaded
   info.groups((event, ifEnd, data) => {
     if (data) {
+      // init data
       datum[data.group_id] = []
       groupName[data.group_id] = data.group_name
       counts[data.group_id] = 0
       totalCounts[data.group_name] = 0
     }
     if (ifEnd) {
+      // after go-cqhttp has loaded
       loading.style.display = 'none'
       init = true
+      // build two charts
       buildChartRank()
       buildChartLine()
       window.onresize = () => {
         chartRank.resize()
         chartLine.resize()
       }
+      // info show
       document.querySelector('.brand').innerHTML = `QQ-Analyser (load ${Object.keys(datum).length} groups totally)`
     }
   })
+  // restart loading info
   info.restart((event, ifEnd) => {
     if (ifEnd) {
       loading.style.display = 'none'
@@ -97,6 +107,7 @@ function handleInfo () {
       text.innerHTML = 'restarting...'
     }
   })
+  // handle message
   info.message((event, data) => {
     counts[data.group_id]++
     totalCounts[groupName[data.group_id]]++
@@ -122,6 +133,7 @@ function handleInfo () {
       }
     }, 10)
   })
+  // cut word func
   const cloud = document.querySelector('.cloudBox')
   word.get((event, result) => {
     cloud.innerHTML = ''
@@ -137,7 +149,7 @@ bindNextChart()
 bindPin()
 handleInfo()
 
-// charts
+// functions to build a chart
 
 function buildChartRank () {
   const option = {
@@ -183,6 +195,7 @@ function buildChartRank () {
     animationEasingUpdate: 'linear'
   }
   chartRank.setOption(option)
+  // update info per 1s
   setInterval(() => {
     chartRank.setOption({
       series: [
@@ -239,6 +252,7 @@ function buildChartLine () {
     }
   }
   chartLine.setOption(option)
+  // update info per 10s
   setInterval(() => {
     const now = new Date()
     let text = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}<br>`

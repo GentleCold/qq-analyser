@@ -13,6 +13,9 @@ class win {
   }
 }
 
+/**
+ * for fast init a window with useful ipc listeners and others
+ */
 class winIndex extends win {
   static init (config, viewPath) {
     super.init(config, viewPath)

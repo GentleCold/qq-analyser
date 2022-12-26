@@ -9,6 +9,11 @@ qqData.serialize(() => {
   qqData.run('create table if not exists recordTime(start int, end int);')
 })
 
+/**
+ * wrapped function to fast store
+ * @param table db table name
+ * @param args values to store
+ */
 qqData.replaceInto = (table, ...args) => {
   const len = args.length
   let nq = ''

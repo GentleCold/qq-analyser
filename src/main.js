@@ -14,6 +14,7 @@ const qqData = require('./utils/db')
 const webSocket = require('ws')
 const sever = new webSocket.Server(config.ip)
 
+// add ws listener
 sever.on('connection', cqhttpHandler)
 
 app.whenReady().then(() => {
@@ -60,7 +61,7 @@ function cqhttpHandler (connection) {
 }
 
 /***
- * store the message to database
+ * handle message and store them to database
  */
 class messageHandler {
   static handle (mess) {
