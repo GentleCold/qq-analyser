@@ -1,10 +1,7 @@
 // open cqhttp firstly
 const path = require('path')
 const childProcess = require('child_process')
-childProcess.spawn('go-cqhttp_windows_386.exe -faststart', {
-  cwd: path.join(process.cwd(), 'go-cqhttp/'),
-  shell: true
-})
+startCqhttp()
 // electron
 const { ipcMain, app } = require('electron')
 // mine
