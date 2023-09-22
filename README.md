@@ -18,7 +18,7 @@
   - [ ] 加群人数预测
   - [ ] 不活跃成员
 ## 部分截图
-![image](https://github.com/GentleCold/qq-analyser/blob/master/img/img1.png)
+![image](img/img1.png)
 ![image](https://github.com/GentleCold/qq-analyser/blob/master/img/img2.png)
 ## 食用
 ***
